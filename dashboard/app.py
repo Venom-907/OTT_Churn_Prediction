@@ -1,9 +1,20 @@
 import streamlit as st
 import pandas as pd
-import joblib
 import os
 
+# -----------------------------
+# PAGE CONFIGURATION
+# MUST BE THE FIRST STREAMLIT COMMAND
+# -----------------------------
+st.set_page_config(
+    page_title="OTT Churn Prediction System",
+    page_icon="🎬",
+    layout="wide"
+)
 
+# -----------------------------
+# CUSTOM CSS
+# -----------------------------
 st.markdown("""
 <style>
 
@@ -22,14 +33,6 @@ header {
 </style>
 """, unsafe_allow_html=True)
 
-
-# Page Configuration
-st.set_page_config(
-    page_title="OTT Churn Prediction System",
-    page_icon="🎬",
-    layout="wide"
-)
-
 # -----------------------------
 # PATH CONFIGURATION
 # -----------------------------
@@ -42,14 +45,18 @@ DATA_PATH = os.path.join(
     "final_dataset.csv"
 )
 
-# Load Dataset
+# -----------------------------
+# LOAD DATA
+# -----------------------------
 @st.cache_data
 def load_data():
     return pd.read_csv(DATA_PATH)
 
 df = load_data()
 
-# Sidebar
+# -----------------------------
+# SIDEBAR
+# -----------------------------
 st.sidebar.markdown("""
 # 🎬 OTT Churn Prediction
 
@@ -65,7 +72,9 @@ Machine Learning Dashboard
 ---
 """)
 
-# Main Title
+# -----------------------------
+# MAIN TITLE
+# -----------------------------
 st.title("🎬 OTT Subscriber Churn Prediction & Retention Analytics System")
 
 st.markdown("---")
@@ -76,7 +85,9 @@ Predict customer churn and identify at-risk subscribers using Machine Learning.
 This dashboard helps OTT platforms improve customer retention through behavioral analytics and predictive modeling.
 """)
 
-# KPI Cards
+# -----------------------------
+# KPI CARDS
+# -----------------------------
 total_customers = len(df)
 
 churn_rate = round(
@@ -94,7 +105,6 @@ avg_engagement = round(
     2
 )
 
-# Display them
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -121,24 +131,27 @@ with col4:
         avg_engagement
     )
 
-# Project Overview
+# -----------------------------
+# PROJECT OVERVIEW
+# -----------------------------
 st.markdown("---")
 
 st.header("📖 Project Overview")
 
-st.write(
-    """
-    This project predicts customer churn in an OTT platform using Machine Learning.
+st.write("""
+This project predicts customer churn in an OTT platform using Machine Learning.
 
-    The system analyzes customer behavior, engagement patterns,
-    subscription details, and viewing activity to identify
-    users who are likely to churn.
+The system analyzes customer behavior, engagement patterns,
+subscription details, and viewing activity to identify
+users who are likely to churn.
 
-    Key objective:
-    Improve customer retention through predictive analytics.
-    """
-)
+Key objective:
+Improve customer retention through predictive analytics.
+""")
 
+# -----------------------------
+# WORKFLOW
+# -----------------------------
 st.subheader("🔄 System Workflow")
 
 st.markdown("""
@@ -155,7 +168,9 @@ st.markdown("""
 6. Retention strategy recommendations
 """)
 
-# Model Performance Table
+# -----------------------------
+# MODEL PERFORMANCE
+# -----------------------------
 st.markdown("---")
 
 st.header("🤖 Model Performance")
