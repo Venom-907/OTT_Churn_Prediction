@@ -1,9 +1,20 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from pathlib import Path
 
 # -----------------------------------
-# Page Title
+# PATH CONFIGURATION
+# -----------------------------------
+
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+
+RAW_DATA_PATH = ROOT_DIR / "data" / "processed" / "final_dataset.csv"
+ENCODED_DATA_PATH = ROOT_DIR / "data" / "processed" / "final_dataset_encoded.csv"
+MODEL_PATH = ROOT_DIR / "models" / "trained_model.pkl"
+
+# -----------------------------------
+# PAGE TITLE
 # -----------------------------------
 
 st.title("🚨 High Risk Customers")
@@ -13,36 +24,30 @@ st.markdown(
 )
 
 # -----------------------------------
-# Load Data
+# LOAD DATA
 # -----------------------------------
 
 @st.cache_data
 def load_raw_data():
-    return pd.read_csv(
-        "../data/processed/final_dataset.csv"
-    )
+    return pd.read_csv(RAW_DATA_PATH)
 
 
 @st.cache_data
 def load_encoded_data():
-    return pd.read_csv(
-        "../data/processed/final_dataset_encoded.csv"
-    )
+    return pd.read_csv(ENCODED_DATA_PATH)
 
 
 raw_df = load_raw_data()
 encoded_df = load_encoded_data()
 
 # -----------------------------------
-# Load Model
+# LOAD MODEL
 # -----------------------------------
 
-model = joblib.load(
-    "../models/trained_model.pkl"
-)
+model = joblib.load(MODEL_PATH)
 
 # -----------------------------------
-# Prepare Features
+# PREPARE FEATURES
 # -----------------------------------
 
 X = encoded_df.drop(
@@ -51,7 +56,7 @@ X = encoded_df.drop(
 )
 
 # -----------------------------------
-# Predict Churn Probability
+# PREDICT CHURN PROBABILITY
 # -----------------------------------
 
 encoded_df["churn_probability"] = (
@@ -59,10 +64,11 @@ encoded_df["churn_probability"] = (
 )
 
 # Add customer IDs back
+
 encoded_df["customer_id"] = raw_df["customer_id"]
 
 # -----------------------------------
-# Sort Customers by Risk
+# SORT CUSTOMERS BY RISK
 # -----------------------------------
 
 high_risk_df = encoded_df.sort_values(
@@ -75,7 +81,7 @@ top_10 = high_risk_df[
 ].head(10)
 
 # -----------------------------------
-# KPI Cards
+# KPI CARDS
 # -----------------------------------
 
 col1, col2, col3 = st.columns(3)
@@ -105,7 +111,7 @@ with col3:
 st.markdown("---")
 
 # -----------------------------------
-# Top 10 High Risk Customers
+# TOP 10 HIGH RISK CUSTOMERS
 # -----------------------------------
 
 st.subheader("🔥 Top 10 Highest Risk Customers")
@@ -134,7 +140,7 @@ st.dataframe(
 )
 
 # -----------------------------------
-# Download Button
+# DOWNLOAD BUTTON
 # -----------------------------------
 
 csv = display_df.to_csv(index=False)

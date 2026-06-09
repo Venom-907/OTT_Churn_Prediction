@@ -1,6 +1,13 @@
 import streamlit as st
 import pandas as pd
-import joblib
+from pathlib import Path
+
+# -----------------------------
+# PATH CONFIGURATION
+# -----------------------------
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+
+DATA_PATH = ROOT_DIR / "data" / "processed" / "final_dataset.csv"
 
 # -----------------------------
 # PAGE TITLE
@@ -16,7 +23,7 @@ st.markdown(
 # -----------------------------
 @st.cache_data
 def load_data():
-    return pd.read_csv("../data/processed/final_dataset.csv")
+    return pd.read_csv(DATA_PATH)
 
 df = load_data()
 
@@ -68,7 +75,10 @@ if st.button("🔎 Search Customer"):
             st.write("**Monthly Fee:**", customer["monthly_fee"])
             st.write("**Profiles:**", customer["number_of_profiles"])
             st.write("**Favorite Genre:**", customer["favorite_genre"])
-            st.write("**Engagement Score:**", round(customer["engagement_score"], 2))
+            st.write(
+                "**Engagement Score:**",
+                round(customer["engagement_score"], 2)
+            )
 
         st.divider()
 

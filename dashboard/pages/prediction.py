@@ -1,19 +1,27 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from pathlib import Path
 
 # ----------------------------------
-# Load Model & Feature Columns
+# PATH CONFIGURATION
 # ----------------------------------
 
-model = joblib.load("../models/trained_model.pkl")
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
-feature_columns = joblib.load(
-    "../models/feature_columns.pkl"
-)
+MODEL_PATH = ROOT_DIR / "models" / "trained_model.pkl"
+FEATURES_PATH = ROOT_DIR / "models" / "feature_columns.pkl"
 
 # ----------------------------------
-# Page Title
+# LOAD MODEL & FEATURE COLUMNS
+# ----------------------------------
+
+model = joblib.load(MODEL_PATH)
+
+feature_columns = joblib.load(FEATURES_PATH)
+
+# ----------------------------------
+# PAGE TITLE
 # ----------------------------------
 
 st.title("🤖 Customer Churn Prediction")
@@ -23,7 +31,7 @@ st.markdown(
 )
 
 # ----------------------------------
-# Input Layout
+# INPUT LAYOUT
 # ----------------------------------
 
 col1, col2 = st.columns(2)
@@ -128,12 +136,11 @@ favorite_genre = st.selectbox(
 )
 
 # ----------------------------------
-# Prediction
+# PREDICTION
 # ----------------------------------
 
 if st.button("🔮 Predict Churn"):
 
-    # Same formula used during training
     engagement_score = (
         watch_hours
         + avg_watch_time_per_day
@@ -152,12 +159,10 @@ if st.button("🔮 Predict Churn"):
 
     input_df = pd.DataFrame([input_data])
 
-    # Create all required columns
     for col in feature_columns:
         if col not in input_df.columns:
             input_df[col] = 0
 
-    # Manual One-Hot Encoding
     mapping = {
         f"gender_{gender}": 1,
         f"subscription_type_{subscription_type}": 1,
@@ -171,20 +176,16 @@ if st.button("🔮 Predict Churn"):
         if col in input_df.columns:
             input_df[col] = value
 
-    # Arrange columns exactly like training data
     input_df = input_df[feature_columns]
 
-    # Prediction
     prediction = model.predict(input_df)[0]
 
     probability = model.predict_proba(input_df)[0][1]
 
     st.markdown("---")
 
-    # Debug (temporary)
     st.write("Raw Probability:", probability)
 
-    # Result
     if prediction == 1:
         st.error("⚠️ Customer Likely To Churn")
     else:
@@ -195,7 +196,6 @@ if st.button("🔮 Predict Churn"):
         f"{probability * 100:.2f}%"
     )
 
-    # Risk Level
     if probability >= 0.80:
         st.error("🔴 HIGH RISK")
 

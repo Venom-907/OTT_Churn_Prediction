@@ -1,6 +1,15 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+# =====================================
+# PATH CONFIGURATION
+# =====================================
+
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+
+DATA_PATH = ROOT_DIR / "data" / "processed" / "final_dataset.csv"
 
 # =====================================
 # PAGE TITLE
@@ -15,7 +24,7 @@ st.markdown("Customer behavior and churn analysis.")
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("../data/processed/final_dataset.csv")
+    return pd.read_csv(DATA_PATH)
 
 df = load_data()
 

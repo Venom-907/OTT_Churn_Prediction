@@ -2,8 +2,19 @@ import streamlit as st
 import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
+from pathlib import Path
 
-# Page Title
+# -----------------------------
+# PATH CONFIGURATION
+# -----------------------------
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+
+MODEL_PATH = ROOT_DIR / "models" / "trained_model.pkl"
+FEATURES_PATH = ROOT_DIR / "models" / "feature_columns.pkl"
+
+# -----------------------------
+# PAGE TITLE
+# -----------------------------
 st.title("🌳 Feature Importance")
 
 st.markdown("""
@@ -11,29 +22,35 @@ This page shows the most important features used by the
 Random Forest model to predict customer churn.
 """)
 
-# Load Model
-model = joblib.load("../models/trained_model.pkl")
+# -----------------------------
+# LOAD MODEL
+# -----------------------------
+model = joblib.load(MODEL_PATH)
 
-# Load Feature Names
-feature_columns = joblib.load("../models/feature_columns.pkl")
+# -----------------------------
+# LOAD FEATURE NAMES
+# -----------------------------
+feature_columns = joblib.load(FEATURES_PATH)
 
-# Create Feature Importance DataFrame
+# -----------------------------
+# FEATURE IMPORTANCE DATAFRAME
+# -----------------------------
 importance_df = pd.DataFrame({
     "Feature": feature_columns,
     "Importance": model.feature_importances_
 })
 
-# Sort Features
 importance_df = importance_df.sort_values(
     by="Importance",
     ascending=False
 )
 
-# Top 10 Features
 top_features = importance_df.head(10)
 
-# Chart
-fig, ax = plt.subplots(figsize=(10, 6))
+# -----------------------------
+# BAR CHART
+# -----------------------------
+fig, ax = plt.subplots(figsize=(8, 4))
 
 ax.barh(
     top_features["Feature"],
@@ -48,7 +65,9 @@ ax.set_title("Top 10 Feature Importances")
 
 st.pyplot(fig)
 
-# Display Table
+# -----------------------------
+# TABLE
+# -----------------------------
 st.subheader("📋 Feature Importance Table")
 
 st.dataframe(
@@ -56,7 +75,9 @@ st.dataframe(
     use_container_width=True
 )
 
-# Insights
+# -----------------------------
+# INSIGHTS
+# -----------------------------
 st.success("""
 ### Key Insights
 
