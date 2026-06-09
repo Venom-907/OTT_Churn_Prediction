@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import os
 
 
 st.markdown("""
@@ -22,21 +23,33 @@ header {
 """, unsafe_allow_html=True)
 
 
-#Page Configuration
+# Page Configuration
 st.set_page_config(
     page_title="OTT Churn Prediction System",
     page_icon="🎬",
     layout="wide"
 )
 
-#Load Dataset
+# -----------------------------
+# PATH CONFIGURATION
+# -----------------------------
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+DATA_PATH = os.path.join(
+    BASE_DIR,
+    "data",
+    "processed",
+    "final_dataset.csv"
+)
+
+# Load Dataset
 @st.cache_data
 def load_data():
-    return pd.read_csv("../data/processed/final_dataset.csv")
+    return pd.read_csv(DATA_PATH)
 
 df = load_data()
 
-#Sidebar
+# Sidebar
 st.sidebar.markdown("""
 # 🎬 OTT Churn Prediction
 
@@ -52,7 +65,7 @@ Machine Learning Dashboard
 ---
 """)
 
-#Main Title
+# Main Title
 st.title("🎬 OTT Subscriber Churn Prediction & Retention Analytics System")
 
 st.markdown("---")
@@ -63,8 +76,7 @@ Predict customer churn and identify at-risk subscribers using Machine Learning.
 This dashboard helps OTT platforms improve customer retention through behavioral analytics and predictive modeling.
 """)
 
-
-#KPI Cards
+# KPI Cards
 total_customers = len(df)
 
 churn_rate = round(
@@ -82,7 +94,7 @@ avg_engagement = round(
     2
 )
 
-#Display them
+# Display them
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -108,8 +120,8 @@ with col4:
         "Avg Engagement",
         avg_engagement
     )
-    
-#Project Overview
+
+# Project Overview
 st.markdown("---")
 
 st.header("📖 Project Overview")
@@ -127,7 +139,6 @@ st.write(
     """
 )
 
-
 st.subheader("🔄 System Workflow")
 
 st.markdown("""
@@ -144,12 +155,11 @@ st.markdown("""
 6. Retention strategy recommendations
 """)
 
-#Model Performance Table
+# Model Performance Table
 st.markdown("---")
 
 st.header("🤖 Model Performance")
 
-#Create Dataframe
 performance_df = pd.DataFrame({
     "Model": [
         "Logistic Regression",
@@ -168,7 +178,6 @@ st.dataframe(
     use_container_width=True
 )
 
-#Best Model
 st.success(
     "🏆 Random Forest selected as final model with 97.5% accuracy."
 )
